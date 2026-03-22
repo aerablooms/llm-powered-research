@@ -1,0 +1,175 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Viechesta Layritz</title>
+
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #fff;
+      color: #0f172a;
+      text-align: center;
+    }
+
+    .container {
+      max-width: 1000px;
+      margin: auto;
+      padding: 20px;
+    }
+
+    .muted {
+      color: #666;
+    }
+
+    input {
+      padding: 10px;
+      width: 60%;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      margin-top: 10px;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 15px;
+      margin-top: 20px;
+    }
+
+    .project-card {
+      border: 1px solid #ddd;
+      border-radius: 12px;
+      padding: 10px;
+      text-align: left;
+      background: #fff;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+
+    .project-card:hover {
+      transform: translateY(-5px);
+    }
+
+    .project-img {
+      width: 100%;
+      height: 150px;
+      object-fit: cover;
+      border-radius: 10px;
+      margin-bottom: 10px;
+    }
+
+    .preview {
+      margin-top: 30px;
+    }
+
+    iframe {
+      width: 100%;
+      height: 500px;
+      border: 1px solid #ccc;
+      border-radius: 10px;
+    }
+
+    .empty {
+      margin-top: 20px;
+      color: #888;
+    }
+
+    @media (max-width: 700px) {
+      .grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="container">
+    <h1>My Work</h1>
+    <p class="muted">Click project to preview PDF</p>
+
+    <input id="projectSearch" type="search" placeholder="Search projects..." />
+
+    <div id="projectsGrid" class="grid"></div>
+    <div id="projectsEmpty" class="empty" hidden>
+      No projects match your search.
+    </div>
+
+    <!-- PREVIEW -->
+    <div class="preview">
+      <h2>Preview</h2>
+      <iframe id="pdfViewer" src=""></iframe>
+    </div>
+  </div>
+
+  <script>
+    const projects = [
+      {
+        title: "Type One",
+        description: "Primary Research",
+        image: "ph-1 copy.png",
+        file: "word1.pdf"
+      },
+      {
+        title: "Type Two",
+        description: "Document Work",
+        image: "ph-2 copy.png",
+        file: "doc1.pdf"
+      },
+      {
+        title: "Type Three",
+        description: "Poster Design",
+        image: "ph-3 copy.png",
+        file: "poster1.pdf"
+      }
+    ];
+
+    const grid = document.getElementById("projectsGrid");
+    const empty = document.getElementById("projectsEmpty");
+    const search = document.getElementById("projectSearch");
+    const viewer = document.getElementById("pdfViewer");
+
+    function render(list) {
+      grid.innerHTML = "";
+      empty.hidden = list.length !== 0;
+
+      list.forEach(p => {
+        const card = document.createElement("div");
+        card.className = "project-card";
+
+        card.innerHTML = `
+          <img class="project-img" src="${p.image}" alt="">
+          <h3>${p.title}</h3>
+          <p>${p.description}</p>
+        `;
+
+        // klik → tampilkan PDF
+        card.onclick = () => {
+          viewer.src = p.file;
+          window.scrollTo({
+            top: document.body.scrollHeight,
+            behavior: "smooth"
+          });
+        };
+
+        grid.appendChild(card);
+      });
+    }
+
+    render(projects);
+
+    search.addEventListener("input", () => {
+      const q = search.value.toLowerCase();
+      const filtered = projects.filter(p =>
+        p.title.toLowerCase().includes(q) ||
+        p.description.toLowerCase().includes(q)
+      );
+      render(filtered);
+    });
+  </script>
+
+</body>
+</html>
